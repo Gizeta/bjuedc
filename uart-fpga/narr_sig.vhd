@@ -22,7 +22,7 @@ end narr_sig;
 architecture arch of narr_sig is
   -- narr信号持续的周期计数器(1 -> narr_prd)
   signal narr_prd_cnt   : std_logic_vector(7 downto 0);
-  -- 停止窄化标志 0-窄化 1-不窄化
+  -- 停止窄化标志 0-窄化, 1-不窄化
   signal stop_narr_flag : std_logic;
 begin
   process(sig_in, reset, clk, stop_narr_flag)

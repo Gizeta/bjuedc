@@ -10,7 +10,7 @@ entity uart_send is
   generic(framelen : integer := 7); -- 数据位为 framelen + 1 位
   port(
     -- bclk - 发送时钟
-	 -- reset - 复位信号
+    -- reset - 复位信号
     -- xmit_cmd_p - 新一轮发送启动信号
     bclk_t, reset_t, xmit_cmd_p : in  std_logic;
     -- 待发送数据寄存器
@@ -23,18 +23,18 @@ entity uart_send is
 end uart_send;
 
 architecture arch of uart_send is
-  --状态机状态
+  -- 状态机状态
   type states is (t_idle, t_start_bit, t_data_bit, t_stop_bit);
-  --初始状态为x_idle
+  -- 初始状态为t_idle
   signal state : states := t_idle;
 begin
   process(bclk_t, reset_t, xmit_cmd_p, tbuf)
     -- 发送1bit所要保持的时钟计数器
     -- (因为现在的bclk_t是baud频率的16倍)
     variable count   : std_logic_vector(4 downto 0) := "00000";
-    --已经发送的数据位 计数器
+    -- 已经发送的数据位 计数器
     variable tcnt    : integer range 0 to framelen := 0;
-    --串行输出数据暂存变量
+    -- 串行输出数据暂存变量
     variable txd_tmp : std_logic;	
   begin
     if reset_t = '1' then 
@@ -47,9 +47,9 @@ begin
       case state is
         when t_idle =>
           if xmit_cmd_p = '1' then -- 判断是否启动新一轮发送
-            state <= t_start_bit; -- 准备发送起始位
+            state <= t_start_bit;  -- 准备发送起始位
             -- 直到有这个发送脉冲后, t_done才复位
-            -- 从这儿开始,发送数据不能改变了
+            -- 从这儿开始, 发送数据不能改变了
             t_done  <= '0'; 
             txd_tmp := '0';
             count   := "00000";
@@ -57,15 +57,15 @@ begin
             state   <= t_idle;
             txd_tmp := '1';
           end if;
-        when t_start_bit => -- 发送起始位
+        when t_start_bit =>        -- 发送起始位
           if count <= "01110" then -- 需要保持16个时钟
             count   := count + 1;
             txd_tmp := '0';
             state   <= t_start_bit; -- 继续发送起始位	
           else
             state   <= t_data_bit; -- 准备开始发送数据位
-            count   := "00000"; -- 重置为0
-            txd_tmp := tbuf(0); -- 发送第0位
+            count   := "00000";    -- 重置为0
+            txd_tmp := tbuf(0);    -- 发送第0位
             tcnt    := 0;
           end if;
         when t_data_bit => -- 发送数据位

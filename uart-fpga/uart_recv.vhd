@@ -52,7 +52,7 @@ begin
         end if;
       when r_sample_start_bit => -- 检测起始位是否够时间
         if rxd_syn = '0' then
-          if count < "0111" then -- 8个时钟后,再采样
+          if count < "0111" then -- 8个时钟后, 再采样
             count := count + 1;
             state <= r_sample_start_bit;
           else -- 起始位正确,开始采样数据位
@@ -80,8 +80,8 @@ begin
             rcnt := rcnt + 1;
           end if;
         end if;
-      when r_stop => -- 省略了对停止位的检测
-        r_ready <= '1'; -- 接受数据可读了
+      when r_stop =>         -- 省略了对停止位的检测
+        r_ready <= '1';      -- 接受数据可读了
         rbuf    <= rbuf_tmp; -- 更新输出数据
         state   <= r_idle;
       when others=>

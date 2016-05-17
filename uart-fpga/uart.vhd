@@ -10,10 +10,10 @@ use ieee.std_logic_unsigned.all;
 
 entity uart is -- 定义uart实体
   port(
-    clkin, resetin : in  std_logic; -- clkin 为50M
-    rxd            : in  std_logic; -- 串行输入数据
-    txd            : out std_logic; -- 串行输出数据
-    wei            : out std_logic_vector(3 downto 0); -- S0~S3
+    clkin, resetin : in  std_logic;                    -- clkin 为50M
+    rxd            : in  std_logic;                    -- 串行输入数据
+    txd            : out std_logic;                    -- 串行输出数据
+    wei            : out std_logic_vector(3 downto 0); -- S0 ~ S3
     duan           : out std_logic_vector(7 downto 0) 
   );
 end uart;
@@ -21,7 +21,7 @@ end uart;
 architecture arch of uart is
   component gen_div is -- 分频元件调用声明
     -- 326分频, 326 * 16 * (9600) = 50M
-	 -- 波特率为9600 
+    -- 波特率为9600 
     generic(div_param : integer := 163);
     port(
       clk_in  : in  std_logic;
@@ -115,11 +115,11 @@ begin
   ---------------------------------
   narr_rev_ready: narr_sig -- 窄化rev_ready信号后给xmit_p
     port map(
-      sig_in       => rev_ready, -- 输入需窄化信号
+      sig_in       => rev_ready,   -- 输入需窄化信号
       clk          => clk_b,
       reset        => not resetin,
-      narr_prd     => X"03", -- narr信号高电平持续的周期数(以clk为周期)
-      narr_sig_out => xmit_p -- 输出窄化后信号
+      narr_prd     => X"03",       -- narr信号高电平持续的周期数(以clk为周期)
+      narr_sig_out => xmit_p       -- 输出窄化后信号
     );
 
   process(rev_ready, resetin, rev_buf, clk_b)
