@@ -8,3 +8,5 @@ incremental_db/
 *.jdi
 *.pof
 *.sof
+*.qws
+*.bak

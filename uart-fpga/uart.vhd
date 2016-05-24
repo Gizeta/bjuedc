@@ -144,7 +144,12 @@ begin
       when "0111" => duan <= x"07"; -- 7
       when "1000" => duan <= x"7f"; -- 8
       when "1001" => duan <= x"6f"; -- 9
-      when others => null;
+      when "1010" => duan <= x"bf"; -- 0.
+      when "1011" => duan <= x"86"; -- 1.
+      when "1100" => duan <= x"db"; -- 2.
+      when "1101" => duan <= x"cf"; -- 3.
+      when "1110" => duan <= x"e6"; -- 4.
+      when "1111" => duan <= x"ed"; -- 5.
       end case;
     end if;
   end process;
