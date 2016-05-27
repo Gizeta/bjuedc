@@ -34,7 +34,25 @@ __interrupt void ADC10_ISR()
 	}
 }
 
-void Display(float num)
+void Display_Integer(int num)
+{
+	char d3 = num % 10;
+	char d2 = (num / 10) % 10;
+	char d1 = (num / 100) % 10;
+	char d0 = num / 1000;
+
+	UART_Send(d3 | 0x80);
+	__no_operation();
+	UART_Send(d2 | 0x40);
+	__no_operation();
+	UART_Send(d1 | 0x20);
+	__no_operation();
+	UART_Send(d0 | 0x10);
+	__no_operation();
+
+}
+
+void Display_Float(float num)
 {
 	int number = num * 1000;
 	char d3 = number % 10;
@@ -44,14 +62,10 @@ void Display(float num)
 
 	UART_Send(d3 | 0x80);
 	__no_operation();
-	//__delay_cycles(50000);
 	UART_Send(d2 | 0x40);
 	__no_operation();
-	//__delay_cycles(50000);
 	UART_Send(d1 | 0x20);
 	__no_operation();
-	//__delay_cycles(50000);
 	UART_Send((d0 + 10) | 0x10);
 	__no_operation();
-	//__delay_cycles(50000);
 }

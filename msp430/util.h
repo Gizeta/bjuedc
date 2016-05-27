@@ -10,6 +10,7 @@
 #define SIZE_FACTOR 1
 
 void Measure();
-void Display(float);
+void Display_Integer(int);
+void Display_Float(float);
 
 #endif
