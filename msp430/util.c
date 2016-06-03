@@ -6,6 +6,7 @@
 char REF_SEL = 0; // 1 => 1.5V, 2 => 2.5V
 uint ADC_Value = 0;
 float Measure_Value = 0;
+float Measure_MaxValue = 0;
 
 void Measure()
 {
@@ -28,7 +29,8 @@ __interrupt void ADC10_ISR()
 	}
 	else
 	{
-		Measure_Value = ADC_Value * SIZE_FACTOR * (REF_SEL == 2 ? 2.5 : 1.5) / 1023;
+		Measure_Value = ADC_Value * (REF_SEL == 2 ? 2.5 : 1.5) / 1023;
+		if (Measure_Value > Measure_MaxValue) Measure_MaxValue = Measure_Value;
 		ADC_Disable();
 		REF_SEL = 0;
 	}

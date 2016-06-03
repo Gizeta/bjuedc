@@ -1,3 +1,12 @@
+/**
+ * P1.0 <- ADC
+ * P1.1 <- UART(RXD)
+ * P1.2 <- UART(TXD)
+ * P1.3 <- Comparator
+ * P1.4 <- Function Selector1
+ * P1.5 <- Function Selector2
+ */
+
 #include <msp430g2553.h>
 #include "adc.h"
 #include "clock.h"
@@ -6,7 +15,12 @@
 #include "uart.h"
 #include "util.h"
 
+#define DC_VOLT_SIZE_FACTOR 1
+#define DC_CUR_SIZE_FACTOR 1
+#define AC_VOLT_SIZE_FACTOR 0.707
+
 extern float Measure_Value;
+extern float Measure_MaxValue;
 
 uint timer0Count = 0;
 uint timer1Count = 0;
@@ -28,18 +42,42 @@ int main()
 
     __enable_interrupt();
 
+    ADC_Enable();
     Comparator_Enable();
     TimerA0_Enable();
     TimerA1_Enable();
     UART_Enable();
 
-    P1DIR |= BIT6; // for test use
+    P1DIR &= ~(BIT4 + BIT5);
+    P1OUT |= BIT4 + BIT5;
+    P1REN |= BIT4 + BIT5;
 
     while (1)
     {
-    	Display_Integer(freqValue * 2);
+    	if ((P1IN & BIT4) == 0)
+    	{
+    		if ((P1IN & BIT5) == 0)
+    		{
+    			Display(Measure_Value * DC_VOLT_SIZE_FACTOR);
+    		}
+    		else
+    		{
+    			Display(Measure_Value * DC_CUR_SIZE_FACTOR);
+    		}
+    	}
+    	else
+    	{
+    		if ((P1IN & BIT5) == 0)
+    		{
+    			Display(Measure_MaxValue * AC_VOLT_SIZE_FACTOR);
+    		}
+    		else
+    		{
+    			Display_Integer(freqValue * 2);
+    		}
+    	}
     }
-	return 0;
+    return 0;
 }
 
 #pragma vector = TIMER0_A1_VECTOR
@@ -66,7 +104,6 @@ __interrupt void Timer0_A1_ISR()
 						cmpFlag = 0;
 					}
 				}
-				P1OUT ^= BIT6;
 			}
 			break;
 		case 4:
@@ -87,6 +124,8 @@ __interrupt void Timer1_A1_ISR()
 			{
 				freqValue = freqCount;
 				freqCount = 0;
+				Measure_MaxValue = 0;
+				Measure();
 			}
 			break;
 		case 4:
