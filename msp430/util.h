@@ -11,6 +11,6 @@
 
 void Measure();
 void Display_Integer(int);
-void Display_Float(float);
+void Display_Float(float, char);
 
 #endif

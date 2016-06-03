@@ -132,7 +132,17 @@ begin
   display: process(clk1, rev_ready, rev_buf)
   begin
     if rising_edge(rev_ready) then  -- 接收完毕
-      wei <= rev_buf(7 downto 4);   -- 前四位为位选信息     
+      case rev_buf(7 downto 4) is   -- 前四位为位选信息
+      when "0001" => wei <= "1000";   -- 1
+      when "0010" => wei <= "0100";   -- 2
+      when "0011" => wei <= "0010";   -- 3
+      when "0100" => wei <= "0001";   -- 4
+      when "1001" => wei <= "1000";   -- 1.
+      when "1010" => wei <= "0100";   -- 2.
+      when "1011" => wei <= "0010";   -- 3.
+      when "1100" => wei <= "0001";   -- 4.
+      when others => wei <= "0000";
+      end case;
       case rev_buf(3 downto 0) is   -- 后四位为位选信息
       when "0000" => duan <= x"3f"; -- 0
       when "0001" => duan <= x"06"; -- 1
@@ -144,13 +154,11 @@ begin
       when "0111" => duan <= x"07"; -- 7
       when "1000" => duan <= x"7f"; -- 8
       when "1001" => duan <= x"6f"; -- 9
-      when "1010" => duan <= x"bf"; -- 0.
-      when "1011" => duan <= x"86"; -- 1.
-      when "1100" => duan <= x"db"; -- 2.
-      when "1101" => duan <= x"cf"; -- 3.
-      when "1110" => duan <= x"e6"; -- 4.
-      when "1111" => duan <= x"ed"; -- 5.
+      when others => duan <= x"00";
       end case;
+		if rev_buf(7) = '1' then
+		  duan(7) <= '1';
+		end if;
     end if;
   end process;
 end arch;

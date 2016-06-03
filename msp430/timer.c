@@ -4,8 +4,8 @@
 void TimerA0_Init()
 {
 	TA0CTL   = TASSEL_2 + MC_0 + TAIE;
-	TA0CCR0  = 100; // 5kHz
-	TA0CCR1  = 50;
+	TA0CCR0  = 70; // (50/7)kHz
+	TA0CCR1  = 35;
 	TA0CCTL1 = CCIE;
 }
 

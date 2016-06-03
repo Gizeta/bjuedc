@@ -36,36 +36,65 @@ __interrupt void ADC10_ISR()
 
 void Display_Integer(int num)
 {
-	char d3 = num % 10;
-	char d2 = (num / 10) % 10;
-	char d1 = (num / 100) % 10;
-	char d0 = num / 1000;
+	if (num >= 1000)
+	{
+		float number = num / 1000.0;
+		Display_Float(number, 3);
+		UART_Send(2 | (1 << 4));
+	}
+	else
+	{
+		char d0 = num % 10;
+		char d1 = (num / 10) % 10;
+		char d2 = num / 100;
 
-	UART_Send(d3 | 0x80);
-	__no_operation();
-	UART_Send(d2 | 0x40);
-	__no_operation();
-	UART_Send(d1 | 0x20);
-	__no_operation();
-	UART_Send(d0 | 0x10);
-	__no_operation();
+		UART_Send(d2 | (4 << 4));
+		__no_operation();
+		UART_Send(d1 | (3 << 4));
+		__no_operation();
+		UART_Send(d0 | (2 << 4));
+		__no_operation();
+		UART_Send(1 | (1 << 4));
+		__no_operation();
+
+	}
 
 }
 
-void Display_Float(float num)
+void Display_Float(float num, char digit)
 {
-	int number = num * 1000;
-	char d3 = number % 10;
-	char d2 = (number / 10) % 10;
-	char d1 = (number / 100) % 10;
-	char d0 = number / 1000;
+	char dx = 4, d = 0, flag = 0;
+	int number1 = num;
+	float number2 = num - number1;
 
-	UART_Send(d3 | 0x80);
-	__no_operation();
-	UART_Send(d2 | 0x40);
-	__no_operation();
-	UART_Send(d1 | 0x20);
-	__no_operation();
-	UART_Send((d0 + 10) | 0x10);
-	__no_operation();
+	if (number1 > 99)
+	{
+		d = number1 / 100;
+		UART_Send(d | (dx << 4));
+		dx--;
+		number1 %= 100;
+		flag = 1;
+	}
+	if (flag == 1 && number1 < 10)
+	{
+		UART_Send(0 | (dx << 4));
+		dx--;
+	}
+	if (number1 > 9)
+	{
+		d = number1 / 10;
+		UART_Send(d | (dx << 4));
+		dx--;
+		number1 %= 10;
+	}
+	UART_Send(number1 | ((dx + 8) << 4));
+	dx--;
+
+	while (dx + digit > 4)
+	{
+		d = number2 * 10;
+		UART_Send(d | (dx << 4));
+		dx--;
+		number2 = number2 * 10 - d;
+	}
 }
