@@ -58,18 +58,18 @@ int main()
     	{
     		if ((P1IN & BIT5) == 0)
     		{
-    			Display_Float(Measure_Value * DC_VOLT_SIZE_FACTOR, 4);
+    			Display(Measure_Value * DC_VOLT_SIZE_FACTOR);
     		}
     		else
     		{
-    			Display_Float(Measure_Value * DC_CUR_SIZE_FACTOR, 4);
+    			Display(Measure_Value * DC_CUR_SIZE_FACTOR);
     		}
     	}
     	else
     	{
     		if ((P1IN & BIT5) == 0)
     		{
-    			Display_Float(Measure_MaxValue * AC_VOLT_SIZE_FACTOR, 4);
+    			Display(Measure_MaxValue * AC_VOLT_SIZE_FACTOR);
     		}
     		else
     		{
@@ -125,7 +125,7 @@ __interrupt void Timer1_A1_ISR()
 				freqValue = freqCount;
 				freqCount = 0;
 				Measure_MaxValue = 0;
-			Measure();
+				Measure();
 			}
 			break;
 		case 4:
