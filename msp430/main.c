@@ -16,7 +16,7 @@
 #include "util.h"
 
 #define DC_VOLT_SIZE_FACTOR 1
-#define DC_CUR_SIZE_FACTOR 1
+#define DC_CUR_SIZE_FACTOR  1
 #define AC_VOLT_SIZE_FACTOR 0.707
 
 extern float Measure_Value;
@@ -58,18 +58,18 @@ int main()
     	{
     		if ((P1IN & BIT5) == 0)
     		{
-    			Display(Measure_Value * DC_VOLT_SIZE_FACTOR);
+    			Display_Float(Measure_Value * DC_VOLT_SIZE_FACTOR, 4);
     		}
     		else
     		{
-    			Display(Measure_Value * DC_CUR_SIZE_FACTOR);
+    			Display_Float(Measure_Value * DC_CUR_SIZE_FACTOR, 4);
     		}
     	}
     	else
     	{
     		if ((P1IN & BIT5) == 0)
     		{
-    			Display(Measure_MaxValue * AC_VOLT_SIZE_FACTOR);
+    			Display_Float(Measure_MaxValue * AC_VOLT_SIZE_FACTOR, 4);
     		}
     		else
     		{
@@ -125,8 +125,8 @@ __interrupt void Timer1_A1_ISR()
 				freqValue = freqCount;
 				freqCount = 0;
 				Measure_MaxValue = 0;
-				Measure();
 			}
+			Measure();
 			break;
 		case 4:
 			break;
