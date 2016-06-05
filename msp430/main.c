@@ -21,7 +21,9 @@
 
 extern float Measure_Value;
 extern float Measure_MaxValue;
+float Display_Value = 0;
 
+uint displayCount = 0;
 uint timer0Count = 0;
 uint timer1Count = 0;
 
@@ -58,11 +60,11 @@ int main()
     	{
     		if ((P1IN & BIT5) == 0)
     		{
-    			Display_Float(Measure_Value * DC_VOLT_SIZE_FACTOR, 4);
+    			Display_Float(Display_Value * DC_VOLT_SIZE_FACTOR, 4);
     		}
     		else
     		{
-    			Display_Float(Measure_Value * DC_CUR_SIZE_FACTOR, 4);
+    			Display_Float(Display_Value * DC_CUR_SIZE_FACTOR, 4);
     		}
     	}
     	else
@@ -125,6 +127,11 @@ __interrupt void Timer1_A1_ISR()
 				freqValue = freqCount;
 				freqCount = 0;
 				Measure_MaxValue = 0;
+			}
+			displayCount = (displayCount + 1) % 30;
+			if (displayCount == 0)
+			{
+				Display_Value = Measure_Value;
 			}
 			Measure();
 			break;
